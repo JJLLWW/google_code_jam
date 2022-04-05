@@ -5,7 +5,7 @@ def intlist_from_input():
 
 def get_adjlst(P, N):
     # adj[i] is a list of indeces that point to i
-    adj = [[]]*(N+1)
+    adj = [[] for i in range(N+1)]
     for i in range(N):
         pts_to = P[i]
         adj[pts_to].append(i+1)
@@ -17,6 +17,13 @@ def dfs(idx, adj, F, P, total):
     for i in adj[idx]:
         val = dfs(i, adj, F, P, total)
         vals.append(val)
+    # leaf
+    if len(vals) == 0:
+        return F[idx-1]
+    # root - just add all branches
+    if idx == 0:
+        total[0] += sum(vals)
+        return
     # branch 
     if len(vals) > 1:
         mval = min(vals)
@@ -25,9 +32,8 @@ def dfs(idx, adj, F, P, total):
     # straight
     else:
         last = vals[0]
-    if F[idx] > last:
-        last = F[idx]
-    total[0] += last
+    if F[idx-1] > last:
+        last = F[idx-1]
     return last
 
 def main():
@@ -36,7 +42,7 @@ def main():
         N = int(input())
         F = intlist_from_input()
         P = intlist_from_input()
-        adj = get_adjlst()
+        adj = get_adjlst(P, N)
         # hacked out way to get a global variable in Python
         maxfun = [0]
         dfs(0, adj, F, P, maxfun)
