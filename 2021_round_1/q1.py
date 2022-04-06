@@ -12,15 +12,22 @@ def lead(x, ndig):
     lead = x // 10**(tdig-ndig)
     return lead
 
+def all_nines(x, ndig):
+    for i in range(ndig):
+        if x % 10 != 9:
+            return False
+        x //= 10
+    return True
+
 def main():
     ncases = int(input())
     for case in range(1, ncases+1):
-        N = int(input())
+        n = int(input())
         words = input().split()
         X = [int(word) for word in words]
         # len(X >= 2)
         nops = 0
-        for i in range(0, len(X)-1):
+        for i in range(0, n-1):
             if X[i] < X[i+1]:
                 continue
             dig, dig_nxt = N(X[i]), N(X[i+1])
@@ -29,7 +36,7 @@ def main():
                 nops += 1
             elif dig > dig_nxt:
                 diff = dig - dig_nxt
-                ldig, ldig_nxt = lead(X[i], diff), lead(X[i+1], diff)
+                ldig, ldig_nxt = lead(X[i], dig_nxt), X[i+1]
                 # if the leading diff digits of X[i] are < the leading diff digits of X[i+1] diff operations needed
                 if ldig < ldig_nxt:
                     X[i+1] *= 10**diff
@@ -38,18 +45,14 @@ def main():
                     X[i+1] *= 10**(diff+1)
                     nops += diff + 1
                 else: # equal
-                    # now the choice depends on whether the diff+1th leading digit of X[i] is a 9
-                    final_dig = lead(X[i], diff+1) - ldig_nxt*10
-                    if final_dig != 9:
-                        X[i+1] = X[i+1]*10 + (final_dig+1)
-                        X[i+1] *= 10**(diff-1)
-                        nops += diff
-                    else:
+                    if all_nines(X[i], diff):
                         X[i+1] *= 10**(diff+1)
                         nops += diff + 1
+                    else:
+                        X[i+1] = X[i] + 1
+                        nops += diff
             else:
                 raise(ValueError("what?"))
         print(f"Case #{case}: {nops}")
 
-# main()
-print(lead(12347382, 2), lead(4367243643287, 5))
+main()
