@@ -21,8 +21,10 @@ def get_convex_hull(pts):
     """
     # leftmost points are guaranteed to be in the convex hull
     minpt = min(pts, key = lambda x: x[0])
+    center = [0,0]
     for pt in pts:
-        print(get_vertical_angle(np.subtract(pt, minpt)))
+        # messed up implementation of the angle (wtf do I do?)
+        print(get_vertical_angle(np.subtract(pt, center)))
 
 def get_polygon_area(pts):
     raise NotImplementedError("get_polygon_area")

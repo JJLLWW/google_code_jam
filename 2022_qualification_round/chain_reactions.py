@@ -1,3 +1,8 @@
+# are allowed imports when running for real (which ones)
+import sys
+
+sys.setrecursionlimit(1500)
+
 def intlist_from_input():
     words = input().split()
     lst = [int(word) for word in words]
@@ -6,11 +11,12 @@ def intlist_from_input():
 def get_adjlst(P, N):
     # adj[i] is a list of indeces that point to i
     adj = [[] for i in range(N+1)]
-    for i in range(N):
+    for i in range(N): # ! adj[N] = []
         pts_to = P[i]
         adj[pts_to].append(i+1)
     return adj
 
+# no bug, just python recursion depth is too small
 def dfs(idx, adj, F, P, total):
     # do a dfs from root idx
     vals = []
