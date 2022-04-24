@@ -7,35 +7,27 @@ def solve(N, P, X):
     # if the current pressure is p and X[i][0] < p < X[i][-1], go down first if p - X[i][0] <= X[i][-1] - p,
     # otherwise go up. 
 
-    # only the max and min pressure are significant.
     npress = 0
-    cur_pressure = 0
+    p = 0
+    
+    # only the max and min pressure are significant.
+    mins, maxs = [], []
     for i in range(N):
-        # increasing order
-        X[i].sort()
-        if X[i][0] < cur_pressure < X[i][-1]:
-            # we need to go up and then down dependent on which is quicker. This also might need to
-            # take the next customer into account. (lets just pray it doesn't)
-            if cur_pressure - X[i][0] <= X[i][-1] - cur_pressure:
-                # go down first.
-                npress += (cur_pressure - X[i][0]) + (X[i][-1] - X[i][0])
-                cur_pressure = X[i][-1]
-            else:
-                # go up first.
-                npress += (X[i][-1] - cur_pressure) + (X[i][-1] - X[i][0])
-                cur_pressure = X[i][0]
-        else:
-            # we only need to go up to X[-1] or down to X[0]. We don't have a choice so can't effect
-            # the next customer.
-            if cur_pressure < X[i][-1]:
-                # inc. pressure
-                npress += X[i][-1] - cur_pressure
-                cur_pressure = X[i][-1]
-            else:
-                # dec. pressure
-                npress += cur_pressure - X[i][0]
-                cur_pressure = X[i][0]
-    return npress
+        mins[i] = min(X[i])
+        maxs[i] = max(X[i])
+    # two cases where we have to think ahead are when max[i+1] < min[i] and min[i+1] > max[i],
+    # and p is betwen min[i] and max[i].
+    for i in range(N):
+        if min[i] < p < maxs[i]:
+            if i+1<N and mins[i] > maxs[i+1]:
+                # go down
+                npress += (maxs[i] - p) + (maxs[i] - mins[i])
+                p = mins[i]
+            if i+1<N and maxs[i] < mins[i+1]:
+                # go up
+                npress += (p - mins[i]) + (maxs[i] - mins[i])
+                p = maxs[i]
+
 
 def main():
     ncases = int(input())
