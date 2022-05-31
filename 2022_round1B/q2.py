@@ -3,31 +3,46 @@ def read_intlist():
     return [int(word) for word in words]
 
 def solve(N, P, X):
-    # strategy, order each customers objects in increasing pressure. 
-    # if the current pressure is p and X[i][0] < p < X[i][-1], go down first if p - X[i][0] <= X[i][-1] - p,
-    # otherwise go up. 
-
     npress = 0
     p = 0
     
     # only the max and min pressure are significant.
     mins, maxs = [], []
     for i in range(N):
-        mins[i] = min(X[i])
-        maxs[i] = max(X[i])
+        mins.append(min(X[i]))
+        maxs.append(max(X[i]))
+    print(mins, maxs)
     # two cases where we have to think ahead are when max[i+1] < min[i] and min[i+1] > max[i],
     # and p is betwen min[i] and max[i].
     for i in range(N):
-        if min[i] < p < maxs[i]:
+        if mins[i] < p < maxs[i]:
             if i+1<N and mins[i] > maxs[i+1]:
                 # go down
                 npress += (maxs[i] - p) + (maxs[i] - mins[i])
                 p = mins[i]
-            if i+1<N and maxs[i] < mins[i+1]:
+            elif i+1<N and maxs[i] < mins[i+1]:
                 # go up
                 npress += (p - mins[i]) + (maxs[i] - mins[i])
                 p = maxs[i]
-
+            # now we only need to care about optimising this stage, not what the next customer needs.
+            elif p - mins[i] >= maxs[i] - p:
+                # go down
+                npress += (maxs[i] - p) + (maxs[i] - mins[i])
+                p = mins[i]
+            else:
+                # go up
+                npress += (p - mins[i]) + (maxs[i] - mins[i])
+                p = maxs[i]
+        # we have no choice but to go straight up or straight down.
+        if p <= mins[i]:
+            # go up
+            npress += maxs[i] - p
+            p = maxs[i]
+        else:
+            # go down
+            npress += p - mins[i]
+            p = mins[i]
+    return npress
 
 def main():
     ncases = int(input())
