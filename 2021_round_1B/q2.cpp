@@ -16,8 +16,16 @@ bool is_possible() {
 
 bool is_valid_solution(int y) {
     multiset<int> X, desired;
+    X.insert(y);
     for(int i=1; i<=N; i++) {
-
+        int cnt = U[i];
+        for(int j=0; j<cnt; j++) {
+            desired.insert(i);
+        }
+    }
+    while(!X.empty() && !desired.empty()) {
+        // get the maximum element of X not in desired.
+        
     }
     return false;
 }
