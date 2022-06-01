@@ -85,13 +85,14 @@ double solve(double f, double R, double t, double r, double g) {
     if(side_len <= 0) {
         return 1;
     }
-    double inner_radius = R - t;
+    // take into account the racket ring hitting the fly with the -f.
+    double inner_radius = R - t - f;
     assert(inner_radius > 0);
     double whole_area = (PI * R * R)/4;
     double miss_area = 0;
     // iterate through all centres on the lattice
-    for(double x = origin; x < bound; x += delta) {
-        for(double y = origin; y < bound; y += delta) {
+    for(double x = origin; x <= bound; x += delta) {
+        for(double y = origin; y <= bound; y += delta) {
             pt X = {x, y};
             double area_reg = get_area_region(X, side_len, inner_radius);
             miss_area += area_reg; 
