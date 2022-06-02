@@ -8,7 +8,15 @@ struct train {
     int time;
     bool dep;
     bool operator<(const train& rhs) {
-        return (this->time < rhs.time);
+        if(this->time < rhs.time) {
+            return true;
+        } else if(this->time == rhs.time) {
+            // count an arrival as being "before" a departure at the same time.
+            if((this->dep == false) && (rhs.dep == true)) {
+                return true;
+            }
+        }
+        return false;
     }
 };
 
@@ -47,7 +55,9 @@ void read_input(std::vector<train>& TTA, std::vector<train>& TTB) {
     std::sort(TTB.begin(), TTB.end());
 }
 
+// A < (-1) < (-2) < (-3) > (-2) > (-1) < >
 int solve_one_station(std::vector<train>& TTX) {
+    // what happens if a train arrives at the same time one leaves?
     int least = 0, cur = 0;
     for(const train& tr : TTX) {
         if(tr.dep) {
