@@ -1,6 +1,7 @@
 #include <iostream>
 #include <vector>
 #include <string>
+#include <cassert>
 
 // just test whether each word matches the pattern O(N*D*L)
 
@@ -14,30 +15,30 @@ void read_words(int D, std::vector<std::string>& words) {
     }
 }
 
-// internal representation of the pattern is bool pat[L][26], where pat[i][j] means
-// jth letter of alphabet is a match for the ith character.
-void read_pattern(bool (&pat)[15][26]) {
+void read_pattern(std::vector<std::vector<bool>>& pat) {
     std::string line;
     std::cin >> line;
-    // assume ASCII
-    int let = 0;
+    int c_idx = 0;
     for(int i=0; i<line.size(); i++) {
         if(line[i] == '(') {
+            i++;
             while(line[i] != ')') {
+                pat[c_idx][line[i]-'a'] = true;
                 i++;
-                pat[let][line[i] - 'a'] = true;
             }
         }
-        else{
-            pat[let][line[i] - 'a'] = true;
+        else {
+            pat[c_idx][line[i]-'a'] = true;
         }
-        let++;
+        c_idx++;
     }
 }
 
+// internal representation of the pattern is bool pat[L][26], where pat[i][j] means
+// jth letter of alphabet is a match for the ith character.
+
 int solve(int L, const std::vector<std::string>& words) {
-    // know L <= 15. Default value of bool is false.
-    bool pat[15][26];
+    std::vector<std::vector<bool>> pat(L, std::vector<bool>(26, false));
     read_pattern(pat);
     // go through each word and see if it matches
     int nmatch = 0;
@@ -65,6 +66,6 @@ int main() {
     read_words(D, words);
     for(int i=1; i<N+1; i++) {
         int K = solve(L, words);
-        std::cout << "Case #" << i << ": " << K;
+        std::cout << "Case #" << i << ": " << K << std::endl;
     }
 }
