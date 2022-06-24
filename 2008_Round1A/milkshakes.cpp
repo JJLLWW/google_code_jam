@@ -1,45 +1,64 @@
 #include <iostream>
 #include <vector>
+#include <algorithm>
 
-// N flavours each 0 (unmalted) or 1 (malted)
+// N flavours each 1 (unmalted) or 0 (malted)
+// (~x1 v x2 v x3 v ~x4) - customer's preferences. (clause)
+// as a whole (~x1 v x3) & (x2 v x3) & (x1 v ~x2 v ~x3)
 
-// make N, one for each flavour, each customer gets one milkshake they want, minimum malted.
-// only one answer.
+// each clause has at most one negation. solve with minimum number of xi set to false.
 
-// store customer's preferences as integer between 1 and 2N inclusive
+// only set xi to false if have to for ~xi (if this encountered this xi must be false)
 
+// store clause as vector of int, x%N is the variable index, x/N is malted or unmalted.
+
+using clause = std::vector<int>;
+using assignment = std::vector<int>;
+using clause_set = std::vector<clause>;
 
 // RVO
-std::vector<int> solve(int N, std::vector<std::vector<int>>& custs) {
-    std::vector<int> malt;
-    return malt;
+clause_set read_input(int N, int M) {
+    int T;
+    clause_set clauses(M);
+    for(int i=0; i<M; i++) {
+        std::cin >> T;
+        clause cls(T);
+        for(int j=0; j<T; j++) {
+            int X, Y;
+            std::cin >> X >> Y;
+            cls[j] = X + Y*N;
+        }
+    }
+    return clauses;
+}
+
+bool is_clause_sat(clause cls, assignment assign) {
+    return false;
+}
+
+// return number of malted, or -1 on failiure.
+int solve(int N, int M, clause_set& clauses) {
+    int nmalt = 0;
+    // 0 unmalted, 1 malted.
+    std::vector<int> assign(N);
+    // does milkshake i have to be malted/unmalted?
+    std::vector<bool> fixed(N);
+    std::fill(assign.begin(), assign.end(), 0);
+    std::fill(fixed.begin(), fixed.end(), false);
+    for(const clause& cls : clauses) {
+        if(cls.size() == 1) {
+            
+        }
+    }
+    return nmalt;
 }
 
 int main() {
     int C;
     std::cin >> C;
     for(int i=1; i<=C; i++) {
-        int N, M, T;
-        std::cin >> N >> M;
-        std::vector<std::vector<int>> custs = std::vector(M, std::vector<int>());
-        for(int j=0; j<M; j++) {
-            std::cin >> T;
-            for(int k=0; k<T; k++) {
-                int X, Y;
-                std::cin >> X >> Y;
-                custs[j].push_back(X + Y*N);
-            }
-        }
-        std::vector<int> malt = solve(N, custs);
-        if(malt.size() == 0) {
-            std::cout << "Case #" << i << ": IMPOSSIBLE" << std::endl;
-        }
-        else {
-            std::cout << "Case #" << i << ": ";
-            for(int j=0; j<N-1; j++) {
-                std::cout << malt[j] << " ";
-            }
-            std::cout << malt[N-1] << std::endl;
-        }
+        int N, M;
+        clause_set clauses = read_input(N, M);
+        int nmalt = solve(N, M, clauses);
     }
 }
